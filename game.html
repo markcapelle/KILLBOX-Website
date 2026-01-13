@@ -21,17 +21,26 @@
     <div id="Navigation"><script src="assets/scripts/loader.js"></script></div>
     
     <main>
-        <section>
-            <h1>GAME</h1>
-            <br>
-            <p>Scroll down to test sticky nav.</p>
-            <p>try viewport size, 375 wide and 600 high.</p>
-            <p style="margin-top:1000px;">End of content</p>
-        </section>
+        
+        <h1>GAME</h1>
 
+        <div class="game-wrapper">
+            <div id="game-viewport">
+            <!-- Killbox game will render here -->
+            </div>
+
+            <div class="controls">
+                <button id="btn-play">Play</button>
+                <button id="btn-pause">Pause</button>
+            </div>
+        </div>
+
+        
+        
     </main>
     
     <footer id="Footer"><script src="assets/scripts/loader.js"></script></footer>
-
+    
+    <script src="assets/scripts/game.js"></script>
 </body>
 </html>
