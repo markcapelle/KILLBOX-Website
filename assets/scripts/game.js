@@ -21,23 +21,46 @@ const player = {
     speed: 4,
     lives: 3,
 
+    // Draw player sprite
     draw() {
-        // Draw player sprite
         if (playerSprite.complete) {
             ctx.drawImage(playerSprite, this.x, this.y, this.width, this.height);
         }
+    },
+    
+    // Move player
+    move(dx, dy) {
+        this.x += dx;
+        this.y += dy;
+        // Clamp to canvas bounds
+        this.x = Math.max(0, Math.min(canvas.width - this.width, this.x));
+        this.y = Math.max(0, Math.min(canvas.height - this.height, this.y));
     }
 };
 
+// Input handling
+const keys = {};
+window.addEventListener('keydown', e => keys[e.key] = true);
+window.addEventListener('keyup', e => keys[e.key] = false);
 
-// game loop
+// Game loop
 function update() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  
-  player.draw();
+    let dx = 0, dy = 0;
+    if (keys['ArrowLeft']) dx -= player.speed;
+    if (keys['ArrowRight']) dx += player.speed;
+    if (keys['ArrowUp']) dy -= player.speed;
+    if (keys['ArrowDown']) dy += player.speed;
 
-  requestAnimationFrame(update);
+    if (keys[" "]) {
+        //fire bullet
+    }
+    
+    player.move(dx, dy);
+    player.draw();
+
+    requestAnimationFrame(update);
 }
 
 update();
