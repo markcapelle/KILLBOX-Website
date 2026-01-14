@@ -40,8 +40,17 @@ const player = {
 
 // Input handling
 const keys = {};
-window.addEventListener('keydown', e => keys[e.key] = true);
-window.addEventListener('keyup', e => keys[e.key] = false);
+window.addEventListener('keydown', e => {
+    // Prevent browser scrolling when game controls are used
+    if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(e.key)) {
+        e.preventDefault();
+    }
+    keys[e.key] = true;
+}, { passive:false });
+
+window.addEventListener('keyup', e => {
+    keys[e.key] = false;
+});
 
 // Game loop
 function update() {
@@ -56,7 +65,7 @@ function update() {
     if (keys[" "]) {
         //fire bullet
     }
-    
+
     player.move(dx, dy);
     player.draw();
 
