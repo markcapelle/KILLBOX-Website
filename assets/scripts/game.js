@@ -12,6 +12,25 @@ const playerSprite = new Image();
 playerSprite.src = "assets/images/Triangle.png";
 // enemy sprite box.png
 
+
+
+// Game Variables
+let gameState = "welcome"; 
+// States: 
+// welcome - Initial load
+// playing
+// paused - pause
+// gameover
+
+
+const playBtn = document.getElementById("play-btn");
+
+// On play button click switch game state
+playBtn.addEventListener("click", () => {
+    gameState = "playing";
+});
+
+
 // Player Object
 const player = {
     x: canvas.width / 2 - 8, // Initial position center horizontal - sprite width
@@ -38,7 +57,23 @@ const player = {
     }
 };
 
-// Input handling
+// Enemy Object
+
+// ========================= Functions =========================
+function drawOverlay() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "white";
+    ctx.font = "28px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("KILLBOX", canvas.width / 2, 200);
+
+    ctx.font = "18px Arial";
+    ctx.fillText("Press Play to Begin", canvas.width / 2, 260);
+
+}
+
+// Input listener
 const keys = {};
 window.addEventListener('keydown', e => {
     // Prevent browser scrolling when game controls are used
@@ -56,18 +91,28 @@ window.addEventListener('keyup', e => {
 function update() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    let dx = 0, dy = 0;
-    if (keys['ArrowLeft']) dx -= player.speed;
-    if (keys['ArrowRight']) dx += player.speed;
-    if (keys['ArrowUp']) dy -= player.speed;
-    if (keys['ArrowDown']) dy += player.speed;
-
-    if (keys[" "]) {
-        //fire bullet
+    if (gameState === "welcome") {
+        drawOverlay();
+        requestAnimationFrame(update);
+        return;
     }
 
-    player.move(dx, dy);
-    player.draw();
+    if (gameState === "playing") {
+        let dx = 0, dy = 0;
+        if (keys['ArrowLeft']) dx -= player.speed;
+        if (keys['ArrowRight']) dx += player.speed;
+        if (keys['ArrowUp']) dy -= player.speed;
+        if (keys['ArrowDown']) dy += player.speed;
+    
+        if (keys[" "]) {
+            //fire bullet
+        }
+
+        player.move(dx, dy);
+        player.draw();
+
+    }
+
 
     requestAnimationFrame(update);
 }
