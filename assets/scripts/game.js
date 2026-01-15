@@ -15,7 +15,7 @@ playerSprite.src = "assets/images/Triangle.png";
 
 
 // Game Variables
-let gameState = "welcome"; 
+let gameState = "playing"; 
 // States: 
 // welcome - Initial load
 // playing
@@ -60,16 +60,47 @@ const player = {
 // Enemy Object
 
 // ========================= Functions =========================
-function drawOverlay() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+function drawOverlay(type) {
+    ctx.save(); // Keeps canvas state clean
+    
+    switch (type) {
+        case "welcome":
+            // ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "white";
+            ctx.font = "28px Arial";
+            ctx.textAlign = "center";
+            ctx.fillText("KILLBOX", canvas.width / 2, 200);
+            ctx.font = "18px Arial";
+            ctx.fillText("Press Play to Begin", canvas.width / 2, 260);
+            break;
 
-    ctx.fillStyle = "white";
-    ctx.font = "28px Arial";
-    ctx.textAlign = "center";
-    ctx.fillText("KILLBOX", canvas.width / 2, 200);
+        case "paused":
+            ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "white";
+            ctx.font = "24px Arial";
+            ctx.textAlign = "center";
+            ctx.fillText("PAUSED", canvas.width / 2, canvas.height / 2);
+            break;
+        
+        case "gameover":
+            ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "red";
+            ctx.font = "26px Arial";
+            ctx.textAlign = "center";
+            ctx.fillText("GAME OVER", canvas.width / 2, 240);
+            ctx.font = "18px Arial";
+            ctx.fillStyle = "white";
+            ctx.fillText("Press Play to Restart", canvas.width / 2, 280);
+            break;
 
-    ctx.font = "18px Arial";
-    ctx.fillText("Press Play to Begin", canvas.width / 2, 260);
+        default:
+            // no overlay
+            break;
+    }
+
+    ctx.restore();
 
 }
 
@@ -92,7 +123,20 @@ function update() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     if (gameState === "welcome") {
-        drawOverlay();
+        drawOverlay("welcome");
+        requestAnimationFrame(update);
+        return;
+    }
+
+    if (gameState === "paused") {
+        player.draw();
+        drawOverlay("paused");
+        requestAnimationFrame(update);
+        return;
+    }
+
+    if (gameState === "gameover") {
+        drawOverlay("gameover");
         requestAnimationFrame(update);
         return;
     }
