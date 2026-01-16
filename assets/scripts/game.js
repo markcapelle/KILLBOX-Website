@@ -12,19 +12,23 @@ const ctx = canvas.getContext('2d');
 const playerSprite = new Image();
 playerSprite.src = "assets/images/Triangle.png";
 // Enemy Assets
+const enemySprite = new Image();
+enemySprite.src = "assets/images/Box.jpg";
+const enemies = [];
 // enemy sprite box.png
 // Music
 
 
 // Game Variables
-let gameState = "playing"; 
+let gameState = "welcome"; 
 // States: 
 // welcome - Initial load
 // playing
-// respawning - state has no overlays, just prevents player input during spawning process.
+// respawning - state has no overlays, just prevents player input during spawning process
 // paused - pause
 // gameover
 
+let spawnRate = 1000; // Time between enemy spawns in ms. higher = slower, lower = faster
 
 const playBtn = document.getElementById("play-btn");
 // pause button
@@ -33,8 +37,7 @@ const playBtn = document.getElementById("play-btn");
 // On play button click switch game state
 playBtn.addEventListener("click", () => {
     gameState = "playing"; // need a safety so can't be pressed twice, doubling newgame instance
-
-    // call new game function
+    startEnemySpawn();
 });
 
 // On pause button click...
@@ -71,6 +74,30 @@ const player = {
 };
 
 // Enemy Object
+class Enemy {
+    constructor(canvasWidth, canvasHeight, enemySprite) { // Constructor function sets variables on a per object basis, giving each spawned object their own values
+        this.sprite = enemySprite;
+        this.x = Math.random() * canvasWidth; //random spawn position above top of canvas
+        this.y = -16;
+        this.speed = 3 + Math.random() * 3; // Random downward speed between 3 and 6
+        this.width = 16;
+        this.height = 16;
+        this.despawnY = canvasHeight / 2; // Despawn threshold (currently set to half the canvas height to test it's working - enemies should despawn halfway down)
+        this.dead = false;
+    }
+    
+    update() {
+        this.y += this.speed; // Move the enemy downward
+
+        if (this.y > this.despawnY) {
+            this.dead = true; // Once the despawn threshold is reached, flag the object for destruction
+        }
+    }
+
+    draw(ctx) {
+        ctx.drawImage(this.sprite, this.x, this.y, this.width, this.height)
+    }
+}
 
 // ========================= Functions =========================
 function drawOverlay(type) {
@@ -114,6 +141,19 @@ function drawOverlay(type) {
 
     ctx.restore();
 
+}
+
+// Spawn enemies
+function startEnemySpawn() {
+    // Prevent stacking
+    if (startEnemySpawn.active) return;
+    startEnemySpawn.active = true;
+
+    startEnemySpawn.interval = setInterval(() => {
+        if (gameState === "playing") {
+            enemies.push(new Enemy(canvas.width, canvas.height, enemySprite));
+        }
+    }, spawnRate);
 }
 
 // Kill player
@@ -182,6 +222,7 @@ function update() {
     }
 
     if (gameState === "playing") {
+        // Player movement
         let dx = 0, dy = 0;
         if (keys['ArrowLeft']) dx -= player.speed;
         if (keys['ArrowRight']) dx += player.speed;
@@ -191,10 +232,20 @@ function update() {
         if (keys[" "]) {
             //fire bullet
         }
-
+        // Player updates
         player.move(dx, dy);
         player.draw();
 
+        // Enemy updates
+        enemies.forEach(e => e.update());
+        enemies.forEach(e => e.draw(ctx));
+
+        // Remove dead enemies
+        for (let i = enemies.length - 1; i >= 0; i--) {
+            if (enemies[i].dead) { // If dead is true
+                enemies.splice(i, 1); // Remove enemy from the array, deleting the object
+            }
+        }
     }
 
 
