@@ -11,11 +11,12 @@ const ctx = canvas.getContext('2d');
 // Player Assets
 const playerSprite = new Image();
 playerSprite.src = "assets/images/Triangle.png";
+
 // Enemy Assets
 const enemySprite = new Image();
 enemySprite.src = "assets/images/Box.jpg";
-const enemies = [];
-// enemy sprite box.png
+const enemies = []; // Array of enemy object
+
 // Music
 
 
@@ -28,29 +29,43 @@ let gameState = "welcome";
 // paused - pause
 // gameover
 
+// Player respawn co-ordinates
+const playerSpawn = { // Not technically a variable, but making it an object allows cleaner storage of x and y co-ords
+    x: canvas.width / 2,
+    y: canvas.height - 40
+}
+
 let spawnRate = 1000; // Time between enemy spawns in ms. higher = slower, lower = faster
 
-const playBtn = document.getElementById("play-btn");
-// pause button
-// quit button
+const playBtn = document.getElementById("play-btn"); // Play button
+const pauseBtn = document.getElementById("pause-btn"); // Pause button
+const quitBtn = document.getElementById ("quit-btn"); // Quit button
 
 // On play button click switch game state
 playBtn.addEventListener("click", () => {
-    gameState = "playing"; // need a safety so can't be pressed twice, doubling newgame instance
-    enemySpawn(true);
+    gameState = "playing"; 
+    enemySpawn(true); // enemyspawn function prevents duplication, so the play button can be multi-clicked to no ill effect
 });
 
-// On pause button click...
-// set gamestate "paused"
+// On pause button click pause game
+pauseBtn.addEventListener("click", () => {
+    if (gameState === "playing") { // Only able to pause if the gamestate is playing
+        gameState = "paused";
+        enemySpawn(false);
+    }    
+});
 
-// On quit button click...
-//set player.lives to 0 and call killPlayer()
+// On quit button click (will) trigger gameover
+quitBtn.addEventListener("click", () => {
+    return; // do nothign for the moment
+    //will set player.lives to 0 and call killPlayer()
+});
 
 // ========================= Objects =========================
 // Player Object
 const player = {
-    x: canvas.width / 2 - 8, // Initial position center horizontal - sprite width
-    y: canvas.height - 40, // Initial position near bottom
+    x: playerSpawn.x, // Initial position center horizontal - sprite width
+    y: playerSpawn.y, // Initial position near bottom
     width: 16,
     height: 16,
     speed: 4,
@@ -146,9 +161,14 @@ function drawOverlay(type) {
 // Spawn enemies
 function enemySpawn(active) {
     if (active) { // On true turn spawning on
-        if (enemySpawn.active) return; // Prevent stacking
-        enemySpawn.active = true;
-        
+        // Prevent stacking
+        if (enemySpawn.active) {
+            return; 
+        }
+        else {
+            enemySpawn.active = true;
+        }
+
         enemySpawn.interval = setInterval(() => {
             if (gameState === "playing") {
                 enemies.push(new Enemy(canvas.width, canvas.height, enemySprite));
@@ -215,6 +235,7 @@ function update() {
 
     if (gameState === "paused") {
         player.draw();
+        enemies.forEach(e => e.draw(ctx));
         drawOverlay("paused");
         requestAnimationFrame(update);
         return;
@@ -236,7 +257,6 @@ function update() {
     
         if (keys[" "]) {
             //fire bullet
-            enemySpawn(false)
         }
         // Player updates
         player.move(dx, dy);
