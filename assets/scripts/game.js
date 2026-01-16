@@ -37,7 +37,7 @@ const playBtn = document.getElementById("play-btn");
 // On play button click switch game state
 playBtn.addEventListener("click", () => {
     gameState = "playing"; // need a safety so can't be pressed twice, doubling newgame instance
-    startEnemySpawn();
+    enemySpawn(true);
 });
 
 // On pause button click...
@@ -144,16 +144,21 @@ function drawOverlay(type) {
 }
 
 // Spawn enemies
-function startEnemySpawn() {
-    // Prevent stacking
-    if (startEnemySpawn.active) return;
-    startEnemySpawn.active = true;
-
-    startEnemySpawn.interval = setInterval(() => {
-        if (gameState === "playing") {
-            enemies.push(new Enemy(canvas.width, canvas.height, enemySprite));
-        }
-    }, spawnRate);
+function enemySpawn(active) {
+    if (active) { // On true turn spawning on
+        if (enemySpawn.active) return; // Prevent stacking
+        enemySpawn.active = true;
+        
+        enemySpawn.interval = setInterval(() => {
+            if (gameState === "playing") {
+                enemies.push(new Enemy(canvas.width, canvas.height, enemySprite));
+            }
+        }, spawnRate);
+    }
+    else{ // Turn spawning off
+        clearInterval(enemySpawn.interval);
+        enemySpawn.active = false;
+    }
 }
 
 // Kill player
@@ -231,6 +236,7 @@ function update() {
     
         if (keys[" "]) {
             //fire bullet
+            enemySpawn(false)
         }
         // Player updates
         player.move(dx, dy);
