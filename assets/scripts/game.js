@@ -8,10 +8,12 @@ viewport.appendChild(canvas);
 const ctx = canvas.getContext('2d');
 
 // Load Assets
+// Player Assets
 const playerSprite = new Image();
 playerSprite.src = "assets/images/Triangle.png";
+// Enemy Assets
 // enemy sprite box.png
-
+// Music
 
 
 // Game Variables
@@ -19,18 +21,29 @@ let gameState = "playing";
 // States: 
 // welcome - Initial load
 // playing
+// respawning - state has no overlays, just prevents player input during spawning process.
 // paused - pause
 // gameover
 
 
 const playBtn = document.getElementById("play-btn");
+// pause button
+// quit button
 
 // On play button click switch game state
 playBtn.addEventListener("click", () => {
-    gameState = "playing";
+    gameState = "playing"; // need a safety so can't be pressed twice, doubling newgame instance
+
+    // call new game function
 });
 
+// On pause button click...
+// set gamestate "paused"
 
+// On quit button click...
+//set player.lives to 0 and call killPlayer()
+
+// ========================= Objects =========================
 // Player Object
 const player = {
     x: canvas.width / 2 - 8, // Initial position center horizontal - sprite width
@@ -65,7 +78,6 @@ function drawOverlay(type) {
     
     switch (type) {
         case "welcome":
-            // ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "white";
             ctx.font = "28px Arial";
             ctx.textAlign = "center";
@@ -104,6 +116,34 @@ function drawOverlay(type) {
 
 }
 
+// Kill player
+// set gamestate to spawning
+// -1 life
+// set player.visible to false
+// set player x and y to spawnpoint
+// pause enemy spawn, wait for all enemy objects to clear
+// check if lives less or equal to 0 and if so call gameover()
+// else call respawn()
+
+// respawn
+// set player to visible
+// set gaemstate to playing
+// resume enemy spawn
+
+// Game over
+// set gamestate to gameover
+
+// new game
+// player.lives = 3
+// begin spawning enemies
+
+
+
+// ========================= Collision =========================
+// only possible if player.visible = true
+
+
+// ========================= Input =========================
 // Input listener
 const keys = {};
 window.addEventListener('keydown', e => {
@@ -118,7 +158,7 @@ window.addEventListener('keyup', e => {
     keys[e.key] = false;
 });
 
-// Game loop
+// ========================= Game Loop =========================
 function update() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
