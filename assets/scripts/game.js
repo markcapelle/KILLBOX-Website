@@ -15,7 +15,7 @@ playerSprite.src = "assets/images/Triangle.png";
 // Enemy Assets
 const enemySprite = new Image();
 enemySprite.src = "assets/images/Box.jpg";
-const enemies = []; // Array of enemy object
+const enemies = []; // Array of enemy objects
 
 // Music
 
@@ -26,7 +26,7 @@ let gameState = "welcome";
 // welcome - Initial load
 // playing
 // respawning - state has no overlays, just prevents player input during spawning process
-// paused - pause
+// paused - pause spawning, prevent input, halt updates
 // gameover
 
 // Player respawn co-ordinates
@@ -43,9 +43,16 @@ const quitBtn = document.getElementById ("quit-btn"); // Quit button
 
 // On play button click switch game state
 playBtn.addEventListener("click", () => {
-    gameState = "playing"; 
-    enemySpawn(true); // enemyspawn function prevents duplication, so the play button can be multi-clicked to no ill effect
-});
+    if (gameState === "gameover") { // If in a gameover state, then player.lives will be zero. in this case, reset them to 3 to reset game.
+        player.lives = 3;
+        gameState = "playing";
+        enemySpawn(true);
+    }
+    else {
+        gameState = "playing"; 
+        enemySpawn(true); // enemyspawn function prevents duplication, so the play button can be multi-clicked to no ill effect
+    }
+}); // Could send all this to a startGame function
 
 // On pause button click pause game
 pauseBtn.addEventListener("click", () => {
@@ -61,7 +68,7 @@ quitBtn.addEventListener("click", () => {
     //will set player.lives to 0 and call killPlayer()
 });
 
-// ========================= Objects =========================
+// ========================= Objects / Classes =========================
 // Player Object
 const player = {
     x: playerSpawn.x, // Initial position center horizontal - sprite width
@@ -88,7 +95,7 @@ const player = {
     }
 };
 
-// Enemy Object
+// Enemy class 
 class Enemy {
     constructor(canvasWidth, canvasHeight, enemySprite) { // Constructor function sets variables on a per object basis, giving each spawned object their own values
         this.sprite = enemySprite;
@@ -155,7 +162,13 @@ function drawOverlay(type) {
     }
 
     ctx.restore();
+}
 
+function drawHUD() {
+    ctx.fillStyle = "white";
+    ctx.font = "14px Arial";
+    ctx.textAlign = "left";
+    ctx.fillText(player.lives, 10, 20);
 }
 
 // Spawn enemies
@@ -227,6 +240,8 @@ window.addEventListener('keyup', e => {
 function update() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    drawHUD();
+
     if (gameState === "welcome") {
         drawOverlay("welcome");
         requestAnimationFrame(update);
@@ -273,7 +288,6 @@ function update() {
             }
         }
     }
-
 
     requestAnimationFrame(update);
 }
