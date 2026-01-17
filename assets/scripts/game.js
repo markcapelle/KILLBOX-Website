@@ -243,7 +243,19 @@ function gameOver() {
 
 
 // ========================= Collision =========================
-// only possible if gameState = "playing"
+// A pretty generic axis-aligned bounding box collision algorithm. Simply checks A overlap with B
+// Will work player vs enemy, bullet vs enemy, etc
+// Used example from MDN_
+// https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection#collision_performance
+function isColliding(a, b) { 
+    return (
+        a.x < b.x + b.width &&
+        a.x + a.width > b.x &&
+        a.y < b.y + b.height &&
+        a.y + a.height > b.y
+    );
+
+}
 
 
 // ========================= Input =========================
@@ -312,7 +324,7 @@ function update() {
     
         if (keys[" "]) {
             //fire bullet
-            killPlayer();
+            
         }
         // Player updates
         player.move(dx, dy);
@@ -322,6 +334,14 @@ function update() {
         enemies.forEach(e => e.update());
         enemies.forEach(e => e.draw(ctx));
 
+        // Check for collision
+        for (let i = 0; i < enemies.length; i++) {
+            if (isColliding(player, enemies[i])) { // Check player vs enemy
+            killPlayer();
+            break; // stop checking after death
+            }
+            // Check bullet vs enemy
+        }
 
     }
 
