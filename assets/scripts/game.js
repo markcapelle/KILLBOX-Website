@@ -67,7 +67,7 @@ pauseBtn.addEventListener("click", () => {
     if (gameState === "playing") { // Only able to pause if the gamestate is playing
         gameState = "paused";
         enemySpawn(false);
-    }    
+    }
 });
 
 // On quit button click (will) trigger gameover
@@ -118,7 +118,7 @@ class Enemy {
         this.speed = 3 + Math.random() * 3; // Random downward speed between 3 and 6
         this.width = 16;
         this.height = 16;
-        this.despawnY = canvasHeight / 2; // Despawn threshold (currently set to half the canvas height to test it's working - enemies should despawn halfway down)
+        this.despawnY = canvasHeight;
         this.dead = false;
     }
     
@@ -218,11 +218,11 @@ function drawHUD() {
 
     // Lives top left
     ctx.textAlign = "left";
-    ctx.fillText(player.lives, 10, 20);
+    ctx.fillText(`Lives: ${player.lives}`, 10, 20);
 
     // Score top right
     ctx.textAlign = "right"
-    ctx.fillText(player.score, canvas.width - 10, 20)
+    ctx.fillText(`Score: ${player.score}`, canvas.width - 25, 20)
 }
 
 // Spawn enemies
