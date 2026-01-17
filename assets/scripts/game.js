@@ -38,7 +38,7 @@ const playerSpawn = { // Not technically a variable, but making it an object all
     y: canvas.height - 40
 }
 
-let spawnRate = 1000; // Time between enemy spawns in ms. higher = slower, lower = faster
+let spawnRate = 100; // Time between enemy spawns in ms. higher = slower, lower = faster
 
 const playBtn = document.getElementById("play-btn"); // Play button
 const pauseBtn = document.getElementById("pause-btn"); // Pause button
@@ -52,6 +52,7 @@ playBtn.addEventListener("click", () => {
     
     if (gameState === "gameover") { // If in a gameover state, then player.lives will be zero. in this case, reset them to 3 to reset game.
         player.lives = 3;
+        player.score = 0;
         gameState = "playing";
         enemySpawn(true);
     }
@@ -86,6 +87,7 @@ const player = {
     height: 16,
     speed: 4,
     lives: 3,
+    score: 0,
 
     canFire: true,
     fireCooldown: 200, // Milliseconds between shots
@@ -191,7 +193,9 @@ function drawOverlay(type) {
             ctx.fillText("GAME OVER", canvas.width / 2, 240);
             ctx.font = "18px Arial";
             ctx.fillStyle = "white";
-            ctx.fillText("Press Play to Restart", canvas.width / 2, 280);
+            ctx.fillText("Total Score:", canvas.width / 2, 280)
+            ctx.fillText(player.score, canvas.width / 2, 310)
+            ctx.fillText("Press Play to Restart", canvas.width / 2, 340);
             break;
 
         case "respawning":
@@ -211,8 +215,14 @@ function drawOverlay(type) {
 function drawHUD() {
     ctx.fillStyle = "white";
     ctx.font = "14px Arial";
+
+    // Lives top left
     ctx.textAlign = "left";
     ctx.fillText(player.lives, 10, 20);
+
+    // Score top right
+    ctx.textAlign = "right"
+    ctx.fillText(player.score, canvas.width - 10, 20)
 }
 
 // Spawn enemies
@@ -286,11 +296,6 @@ function fireBullet() {
         player.canFire = true;
     }, player.fireCooldown);
 }
-
-// kill enemy
-// +1 score
-
-
 
 // ========================= Collision =========================
 // A pretty generic axis-aligned bounding box collision algorithm. Simply checks A overlap with B
@@ -408,7 +413,7 @@ function update() {
                 if (isColliding(bullets[i], enemies[j])) { // If a bullet vs enemy is true, destroy both objects
                     bullets.splice(i, 1);
                     enemies.splice(j, 1);
-                    // plus 1 to score here
+                    player.score += 1; // Add one to score
                     break;
                 }
             }
