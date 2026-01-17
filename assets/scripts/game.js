@@ -241,6 +241,7 @@ function enemySpawn(active) {
 function killPlayer() {
     player.lives -= 1;
     enemySpawn(false);
+    bullets.length = 0;
     
     if (player.lives > 0) {
         playerRespawn();
@@ -346,7 +347,7 @@ function update() {
         player.draw();
         enemies.forEach(e => e.draw(ctx));
         bullets.forEach(b => b.draw(ctx));
-        
+
         drawOverlay("paused");
         requestAnimationFrame(update);
         return;
@@ -363,7 +364,6 @@ function update() {
 
         enemies.forEach(e => e.update());
         enemies.forEach(e => e.draw(ctx));
-        
     }
 
     if (gameState === "playing") {
@@ -395,13 +395,23 @@ function update() {
             bullets[i].draw(ctx);
         }
 
-        // Check for collision
+        // Player vs enemy collision
         for (let i = 0; i < enemies.length; i++) {
             if (isColliding(player, enemies[i])) { // Check player vs enemy
             killPlayer();
             break; // stop checking after death
             }
-            // Check bullet vs enemy
+        }
+        // Bullet vs enemy collision - seperate loop because the array sizes will be different
+        for (let i = bullets.length - 1; i >= 0; i--) {
+            for (let j = enemies.length - 1; j >= 0; j--) {
+                if (isColliding(bullets[i], enemies[j])) { // If a bullet vs enemy is true, destroy both objects
+                    bullets.splice(i, 1);
+                    enemies.splice(j, 1);
+                    // plus 1 to score here
+                    break;
+                }
+            }
         }
 
     }
