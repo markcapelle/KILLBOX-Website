@@ -264,6 +264,7 @@ function playerRespawn() {
 function gameOver() {
     gameState = "gameover";
     enemies.length = 0;
+    bullets.length = 0;
     player.x = playerSpawn.x;
     player.y = playerSpawn.y;
 }
@@ -341,8 +342,11 @@ function update() {
     }
 
     if (gameState === "paused") {
+        // Draw the player, enemies and bullets so they stay visible on screen
         player.draw();
         enemies.forEach(e => e.draw(ctx));
+        bullets.forEach(b => b.draw(ctx));
+        
         drawOverlay("paused");
         requestAnimationFrame(update);
         return;
