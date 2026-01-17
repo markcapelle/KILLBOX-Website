@@ -17,6 +17,9 @@ const enemySprite = new Image();
 enemySprite.src = "assets/images/RedSquare.png";
 const enemies = []; // Array of enemy objects
 
+// Bullet Assets
+const bullets = [];
+
 // Music
 
 
@@ -124,6 +127,32 @@ class Enemy {
 
     draw(ctx) {
         ctx.drawImage(this.sprite, this.x, this.y, this.width, this.height)
+    }
+}
+
+// Bullet class
+class Bullet {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.width = 3;
+        this.height = 8;
+        this.speed = 8;
+        this.despawnY = -this.height
+        this.dead = false;
+    }
+
+    update() {
+        this.y -= this.speed;
+
+        if (this.y <= this.despawnY) { // Mark bullet for destruction when it goes beyond the canvas
+            this.dead = true;
+        }
+    }
+
+    draw(ctx) { // Javascript will procedurally draw each bullet on object creation
+        ctx.fillStyle = "white";
+        ctx.fillRect(this.x, this.y, this.width, this.height);
     }
 }
 
@@ -236,6 +265,12 @@ function gameOver() {
     player.y = playerSpawn.y;
 }
 
+function fireBullet() {
+    bullets.push(new Bullet(
+        player.x + player.width / 2 - 1,
+        player.y
+    ));
+}
 
 // kill enemy
 // +1 score
@@ -323,8 +358,7 @@ function update() {
         if (keys['ArrowDown']) dy += player.speed;
     
         if (keys[" "]) {
-            //fire bullet
-            
+            fireBullet();
         }
         // Player updates
         player.move(dx, dy);
@@ -333,6 +367,16 @@ function update() {
         // Enemy updates
         enemies.forEach(e => e.update());
         enemies.forEach(e => e.draw(ctx));
+
+        // Update bullets
+        for (let i = bullets.length - 1; i >= 0; i--) {
+            bullets[i].update();
+            if (bullets[i].dead) {
+                bullets.splice(i, 1);
+                continue;
+            }
+            bullets[i].draw(ctx);
+        }
 
         // Check for collision
         for (let i = 0; i < enemies.length; i++) {
