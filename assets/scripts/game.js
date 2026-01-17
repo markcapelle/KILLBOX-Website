@@ -87,6 +87,9 @@ const player = {
     speed: 4,
     lives: 3,
 
+    canFire: true,
+    fireCooldown: 200, // Milliseconds between shots
+
     // Draw player sprite
     draw() {
         if (playerSprite.complete) {
@@ -266,10 +269,20 @@ function gameOver() {
 }
 
 function fireBullet() {
+    if (!player.canFire) {
+        return;
+    }
+
     bullets.push(new Bullet(
         player.x + player.width / 2 - 1,
         player.y
     ));
+
+    player.canFire = false;
+
+    setTimeout(() => {
+        player.canFire = true;
+    }, player.fireCooldown);
 }
 
 // kill enemy
