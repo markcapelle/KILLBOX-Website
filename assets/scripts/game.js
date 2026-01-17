@@ -14,7 +14,7 @@ playerSprite.src = "assets/images/Triangle.png";
 
 // Enemy Assets
 const enemySprite = new Image();
-enemySprite.src = "assets/images/Box.jpg";
+enemySprite.src = "assets/images/RedSquare.png";
 const enemies = []; // Array of enemy objects
 
 // Music
