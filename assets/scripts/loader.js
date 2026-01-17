@@ -8,4 +8,4 @@ fetch('assets/nav.html')
 
 fetch('assets/footer.html')
     .then(res => res.text())
-    .then(data => {document.getElementById('Footer').innerHTML = data}); 
+    .then(data => {document.getElementById('Footer').innerHTML = data});

@@ -43,16 +43,20 @@ const quitBtn = document.getElementById ("quit-btn"); // Quit button
 
 // On play button click switch game state
 playBtn.addEventListener("click", () => {
+    if(gameState === "respawning") {
+        return; // Ignore clicks if player is in the middle of respawn countdown
+    }
+    
     if (gameState === "gameover") { // If in a gameover state, then player.lives will be zero. in this case, reset them to 3 to reset game.
         player.lives = 3;
         gameState = "playing";
         enemySpawn(true);
     }
-    else {
-        gameState = "playing"; 
-        enemySpawn(true); // enemyspawn function prevents duplication, so the play button can be multi-clicked to no ill effect
-    }
-}); // Could send all this to a startGame function
+
+    // Normal case start/resume
+    gameState = "playing"; 
+    enemySpawn(true); // enemyspawn function prevents duplication, so the play button can be multi-clicked to no ill effect
+}); // Could send all this to a startGame function - for readability against other button functions, leaving it in the eventlistener function is better
 
 // On pause button click pause game
 pauseBtn.addEventListener("click", () => {
@@ -64,8 +68,10 @@ pauseBtn.addEventListener("click", () => {
 
 // On quit button click (will) trigger gameover
 quitBtn.addEventListener("click", () => {
-    return; // do nothign for the moment
-    //will set player.lives to 0 and call killPlayer()
+    if (gameState === "playing" || gameState === "paused") {
+        player.lives = 1;
+        killPlayer();
+    }
 });
 
 // ========================= Objects / Classes =========================
@@ -156,6 +162,12 @@ function drawOverlay(type) {
             ctx.fillText("Press Play to Restart", canvas.width / 2, 280);
             break;
 
+        case "respawning":
+            ctx.fillStyle = "white";
+            ctx.font = "24px Arial";
+            ctx.textAlign = "center";
+            ctx.fillText("Respawning in 3...", canvas.width / 2, canvas.height / 2);
+
         default:
             // no overlay
             break;
@@ -194,31 +206,44 @@ function enemySpawn(active) {
     }
 }
 
-// Kill player
-// set gamestate to spawning
-// -1 life
-// set player.visible to false
-// set player x and y to spawnpoint
-// pause enemy spawn, wait for all enemy objects to clear
-// check if lives less or equal to 0 and if so call gameover()
-// else call respawn()
+function killPlayer() {
+    player.lives -= 1;
+    enemySpawn(false);
+    
+    if (player.lives > 0) {
+        playerRespawn();
+    }
+    else {
+        gameOver();
+    }
+}
 
-// respawn
-// set player to visible
-// set gaemstate to playing
-// resume enemy spawn
+function playerRespawn() {
+    gameState = "respawning"; // Prevents input, stops drawing player so they become hidden
+    player.x = playerSpawn.x;
+    player.y = playerSpawn.y;
+        
+    setTimeout(() => {
+        gameState = "playing";
+        enemySpawn(true);
+    }, 3000);
+}
 
-// Game over
-// set gamestate to gameover
+function gameOver() {
+    gameState = "gameover";
+    enemies.length = 0;
+    player.x = playerSpawn.x;
+    player.y = playerSpawn.y;
+}
 
-// new game
-// player.lives = 3
-// begin spawning enemies
+
+// kill enemy
+// +1 score
 
 
 
 // ========================= Collision =========================
-// only possible if player.visible = true
+// only possible if gameState = "playing"
 
 
 // ========================= Input =========================
@@ -235,12 +260,19 @@ window.addEventListener('keydown', e => {
 window.addEventListener('keyup', e => {
     keys[e.key] = false;
 });
-
+ 
 // ========================= Game Loop =========================
 function update() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Always draw the canvas
 
-    drawHUD();
+    drawHUD(); // Always draw the hud
+
+    // Always remove dead enemies
+    for (let i = enemies.length - 1; i >= 0; i--) {
+        if (enemies[i].dead) { // If dead is true
+            enemies.splice(i, 1); // Remove enemy from the array, deleting the object
+        }
+    }
 
     if (gameState === "welcome") {
         drawOverlay("welcome");
@@ -262,6 +294,14 @@ function update() {
         return;
     }
 
+    if (gameState === "respawning") {
+        drawOverlay("respawning");
+
+        enemies.forEach(e => e.update());
+        enemies.forEach(e => e.draw(ctx));
+        
+    }
+
     if (gameState === "playing") {
         // Player movement
         let dx = 0, dy = 0;
@@ -272,6 +312,7 @@ function update() {
     
         if (keys[" "]) {
             //fire bullet
+            killPlayer();
         }
         // Player updates
         player.move(dx, dy);
@@ -281,12 +322,7 @@ function update() {
         enemies.forEach(e => e.update());
         enemies.forEach(e => e.draw(ctx));
 
-        // Remove dead enemies
-        for (let i = enemies.length - 1; i >= 0; i--) {
-            if (enemies[i].dead) { // If dead is true
-                enemies.splice(i, 1); // Remove enemy from the array, deleting the object
-            }
-        }
+
     }
 
     requestAnimationFrame(update);
