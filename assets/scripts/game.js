@@ -295,7 +295,7 @@ function fireBullet() {
 
     player.canFire = false;
 
-    setTimeout(() => {
+    setTimeout(() => { // Timeout to control rate of fire
         player.canFire = true;
     }, player.fireCooldown);
 }
