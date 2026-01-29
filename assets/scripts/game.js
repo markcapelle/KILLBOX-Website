@@ -1,5 +1,6 @@
-
 // Canvas setup
+// Setup derived from a mixture of an MDN_ tutorial with suggestions from Copilot
+// https://developer.mozilla.org/en-US/docs/Games/Tutorials/2D_Breakout_game_pure_JavaScript/Create_the_Canvas_and_draw_on_it
 const viewport = document.getElementById('game-viewport');
 const canvas = document.createElement('canvas');
 canvas.width = 375;
@@ -27,10 +28,10 @@ const bullets = [];
 let gameState = "welcome"; 
 // States: 
 // welcome - Initial load
-// playing
-// respawning - state has no overlays, just prevents player input during spawning process
+// playing - game in progress
+// respawning - state has no overlays, just prevents player input during spawning process, gives time for enemies to clear the field
 // paused - pause spawning, prevent input, halt updates
-// gameover
+// gameover - clear all projectile and enemy objects, display gameover overlay
 
 // Player respawn co-ordinates
 const playerSpawn = { // Not technically a variable, but making it an object allows cleaner storage of x and y co-ords
@@ -143,7 +144,7 @@ class Bullet {
         this.width = 3;
         this.height = 8;
         this.speed = 8;
-        this.despawnY = -this.height
+        this.despawnY = -this.height // Top of the canvas
         this.dead = false;
     }
 
@@ -176,7 +177,7 @@ function drawOverlay(type) {
             break;
 
         case "paused":
-            ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+            ctx.fillStyle = "rgba(0, 0, 0, 0.5)"; // Blur the background
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "white";
             ctx.font = "24px Arial";
@@ -263,10 +264,12 @@ function killPlayer() {
 
 function playerRespawn() {
     gameState = "respawning"; // Prevents input, stops drawing player so they become hidden
+    
+    // Set player to their spawn point
     player.x = playerSpawn.x;
     player.y = playerSpawn.y;
         
-    setTimeout(() => {
+    setTimeout(() => { // Few seconds timeout, then change back to a playing gamestate
         gameState = "playing";
         enemySpawn(true);
     }, 3000);
@@ -309,7 +312,6 @@ function isColliding(a, b) {
         a.y < b.y + b.height &&
         a.y + a.height > b.y
     );
-
 }
 
 
@@ -332,14 +334,7 @@ window.addEventListener('keyup', e => {
 function update() {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Always draw the canvas
 
-    drawHUD(); // Always draw the hud
-
-    // Always remove dead enemies
-    for (let i = enemies.length - 1; i >= 0; i--) {
-        if (enemies[i].dead) { // If dead is true
-            enemies.splice(i, 1); // Remove enemy from the array, deleting the object
-        }
-    }
+    
 
     if (gameState === "welcome") {
         drawOverlay("welcome");
@@ -421,7 +416,17 @@ function update() {
 
     }
 
-    requestAnimationFrame(update);
+    drawHUD(); // Always draw the hud last to paint on top of everything else.
+
+    // Always remove dead enemies
+    for (let i = enemies.length - 1; i >= 0; i--) {
+        if (enemies[i].dead) { // If dead is true
+            enemies.splice(i, 1); // Remove enemy from the array, deleting the object
+        }
+    }
+
+    // https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame
+    requestAnimationFrame(update); // Call the function on the next screen repaint (approx 60 frames per second)
 }
 
-update();
+update(); // Run the main gameloop
