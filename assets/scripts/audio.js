@@ -1,5 +1,5 @@
 const audioBtn = document.getElementById('audioToggle');
-let audioEnabled = false; // Control if music and sound effects are active
+let audioEnabled = true; // Control if music and sound effects are active
 
 // Music
 const bgMusic = new Audio("assets/audio/West One Music - Rage Racer.mp3");

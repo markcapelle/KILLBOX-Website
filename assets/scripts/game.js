@@ -275,7 +275,7 @@ function playerRespawn() {
     setTimeout(() => { // Few seconds timeout, then change back to a playing gamestate
         gameState = "playing";
         enemySpawn(true);
-    }, 3000);
+    }, 3100);
 }
 
 function gameOver() {
