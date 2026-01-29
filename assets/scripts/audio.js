@@ -1,15 +1,17 @@
-
 const audioBtn = document.getElementById('audioToggle');
 let audioEnabled = false; // Control if music and sound effects are active
 
 // Music
 const bgMusic = new Audio("assets/audio/West One Music - Rage Racer.mp3");
+bgMusic.loop = true;
 bgMusic.volume = 1.0;
 
 // Sound Effects
 const Explosion = new Audio("assets/audio/Explosion.mp3");
 const Laser = new Audio("assets/audio/Laser.mp3");
 const Respawn = new Audio("assets/audio/Respawn.mp3");
+const Pause = new Audio("assets/audio/Pause.mp3");
+const GameOver = new Audio("assets/audio/GameOver.mp3");
 
 // Autoplay on script load
 if (audioEnabled) {
@@ -23,8 +25,6 @@ audioBtn.addEventListener('click', () => {
         // Start music
         bgMusic.play();
 
-        // set sound effects boolean to true
-
         // Set audio controls button
         audioBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
     } else {
@@ -32,19 +32,45 @@ audioBtn.addEventListener('click', () => {
         bgMusic.pause();
         bgMusic.currentTime = 0;
 
-        // set sound effects boolean to false
-
         // Set audio controls button
         audioBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
     }
 });
 
 
-// sound effects controller
+// Sound effects controller
+// If audioEnabled is true, allow play of sound effects
 function playLaser() {
     if (audioEnabled) {
         Laser.currentTime = 0;
         Laser.play();
     }
 }
-// if sound effects true, allow play of sound effect to be called.
+
+function playExplosion() {
+    if (audioEnabled) {
+        Explosion.currentTime = 0;
+        Explosion.play();
+    }
+}
+
+function playRespawn() {
+    if (audioEnabled) {
+        Respawn.currentTime = 0;
+        Respawn.play();
+    }
+}
+
+function playPause() {
+    if (audioEnabled) {
+        Pause.currentTime = 0;
+        Pause.play();
+    }
+}
+
+function playGameOver() {
+    if (audioEnabled) {
+        GameOver.currentTime = 0;
+        GameOver.play();
+    }
+}

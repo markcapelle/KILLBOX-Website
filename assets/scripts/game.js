@@ -68,6 +68,7 @@ pauseBtn.addEventListener("click", () => {
     if (gameState === "playing") { // Only able to pause if the gamestate is playing
         gameState = "paused";
         enemySpawn(false);
+        playPause();
     }
 });
 
@@ -268,6 +269,8 @@ function playerRespawn() {
     // Set player to their spawn point
     player.x = playerSpawn.x;
     player.y = playerSpawn.y;
+
+    playRespawn(); // Play respawn sound in audio.js
         
     setTimeout(() => { // Few seconds timeout, then change back to a playing gamestate
         gameState = "playing";
@@ -281,6 +284,7 @@ function gameOver() {
     bullets.length = 0;
     player.x = playerSpawn.x;
     player.y = playerSpawn.y;
+    playGameOver(); // Play gameover sound in audio.js
 }
 
 function fireBullet() {
@@ -294,7 +298,7 @@ function fireBullet() {
     ));
 
     player.canFire = false;
-    playLaser();
+    playLaser(); // Play laser sound in audio.js
 
     setTimeout(() => { // Timeout to control rate of fire
         player.canFire = true;
@@ -410,6 +414,7 @@ function update() {
                     bullets.splice(i, 1);
                     enemies.splice(j, 1);
                     player.score += 1; // Add one to score
+                    playExplosion(); // Play explosion sound in audio.js
                     break;
                 }
             }
