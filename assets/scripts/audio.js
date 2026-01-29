@@ -1,18 +1,20 @@
 
 const audioBtn = document.getElementById('audioToggle');
-let audioEnabled = true; // Music is ON when game loads
+let audioEnabled = false; // Control if music and sound effects are active
 
+// Music
 const bgMusic = new Audio("assets/audio/West One Music - Rage Racer.mp3");
-
 bgMusic.volume = 1.0;
 
+// Sound Effects
+const Explosion = new Audio("assets/audio/Explosion.mp3");
+const Laser = new Audio("assets/audio/Laser.mp3");
+const Respawn = new Audio("assets/audio/Respawn.mp3");
+
 // Autoplay on script load
-bgMusic.play();
-
-
-// sound effects parameters
-// boolean as to wether or not to play sound effects
-
+if (audioEnabled) {
+    bgMusic.play();
+}
 
 audioBtn.addEventListener('click', () => {
     audioEnabled = !audioEnabled; // Toggle state
@@ -39,4 +41,10 @@ audioBtn.addEventListener('click', () => {
 
 
 // sound effects controller
+function playLaser() {
+    if (audioEnabled) {
+        Laser.currentTime = 0;
+        Laser.play();
+    }
+}
 // if sound effects true, allow play of sound effect to be called.

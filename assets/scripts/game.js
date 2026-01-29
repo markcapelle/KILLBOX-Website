@@ -294,6 +294,7 @@ function fireBullet() {
     ));
 
     player.canFire = false;
+    playLaser();
 
     setTimeout(() => { // Timeout to control rate of fire
         player.canFire = true;
