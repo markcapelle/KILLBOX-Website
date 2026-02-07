@@ -21,9 +21,6 @@ const enemies = []; // Array of enemy objects
 // Bullet Assets
 const bullets = [];
 
-// Music
-
-
 // Game Variables
 let gameState = "welcome"; 
 // States: 

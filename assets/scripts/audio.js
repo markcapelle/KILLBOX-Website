@@ -1,4 +1,4 @@
-const audioBtn = document.getElementById('audioToggle');
+const audioBtn = document.getElementById('audio-btn');
 let audioEnabled = true; // Control if music and sound effects are active
 
 // Music
@@ -7,6 +7,7 @@ bgMusic.loop = true;
 bgMusic.volume = 1.0;
 
 // Sound Effects
+// https://pixabay.com/
 const Explosion = new Audio("assets/audio/Explosion.mp3");
 const Laser = new Audio("assets/audio/Laser.mp3");
 const Respawn = new Audio("assets/audio/Respawn.mp3");
