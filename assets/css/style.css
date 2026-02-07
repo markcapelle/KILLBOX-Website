@@ -7,6 +7,11 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+h1 {
+    text-align: center;
+}
+
+
 /* ====================== Banner ====================== */
 header {
     background: #333;
@@ -29,11 +34,11 @@ header {
     width: 60px;
     height: 60px;
 
+    border-radius: 8px;
+
     object-fit: contain;
     position: absolute;
     left: 20px;
-    top: 50%;
-    transform: translateY(-50%);
 }
 
 
@@ -55,6 +60,65 @@ main {
 }
 
 
+/* ====================== Zigzag ====================== */
+.zigzag-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+/* Zigzag layout card */
+.zigzag-card {
+  display: flex;
+  flex-wrap: wrap;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Zigzag layout */
+.zigzag-card:nth-child(even) {
+  flex-direction: row-reverse;
+}
+
+.zigzag-info, .zigzag-image {
+  flex: 1 1 300px;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.zigzag-info {
+  background: #f9f9f9;
+}
+
+.zigzag-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Collapse the welcome section and zigzag cards */
+@media (max-width: 850px) {
+    .welcome-section {
+    flex-direction: column;
+  }
+
+  .welcome-card {
+    margin: 0 !important;
+    max-height: none;
+    
+  }
+
+  .zigzag-card {
+    flex-direction: column;
+  }
+
+  .zigzag-card:nth-child(even) {
+    flex-direction: column;
+  } 
+
+}
 
 /* ====================== Game Viewport ====================== */
 .game-wrapper {
