@@ -171,7 +171,9 @@ function drawOverlay(type) {
             ctx.textAlign = "center";
             ctx.fillText("KILLBOX", canvas.width / 2, 200);
             ctx.font = "18px Arial";
-            ctx.fillText("Press Play to Begin", canvas.width / 2, 260);
+            ctx.fillText("Use the arrow keys to move.", canvas.width / 2, 260);
+            ctx.fillText("Use spacebar to shoot.", canvas.width / 2, 280);
+            ctx.fillText("Press Play to Begin", canvas.width / 2, 310);
             break;
 
         case "paused":
