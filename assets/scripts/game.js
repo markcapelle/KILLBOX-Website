@@ -272,7 +272,7 @@ function playerRespawn() {
     setTimeout(() => { // Few seconds timeout, then change back to a playing gamestate
         gameState = "playing";
         enemySpawn(true);
-    }, 3100);
+    }, 3100); // Custom timeout to synch up with the respawn sound.
 }
 
 function gameOver() {
@@ -337,7 +337,8 @@ function update() {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Always draw the canvas
 
     
-
+    // Using if statements to determine what to do or display depending on the game state
+    // An alternative to using if statements is to use a switch. The performance difference appears to be zero, only difference is readability.
     if (gameState === "welcome") {
         drawOverlay("welcome");
         requestAnimationFrame(update);
@@ -408,9 +409,14 @@ function update() {
         for (let i = bullets.length - 1; i >= 0; i--) {
             for (let j = enemies.length - 1; j >= 0; j--) {
                 if (isColliding(bullets[i], enemies[j])) { // If a bullet vs enemy is true, destroy both objects
+                    const scoreMult = enemies[j].speed >= 5; // Check if enemy spead is 5 or greater to apply score multiplier
+
+                    // Destroy both objects
                     bullets.splice(i, 1);
                     enemies.splice(j, 1);
-                    player.score += 1; // Add one to score
+
+                    player.score += scoreMult ? 2 : 1; // double score if fast enemy
+
                     playExplosion(); // Play explosion sound in audio.js
                     break;
                 }
