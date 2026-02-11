@@ -21,6 +21,9 @@ const enemies = []; // Array of enemy objects
 // Bullet Assets
 const bullets = [];
 
+// Starfield background
+const starfield = createStarfield(200, canvas.width, canvas.height);
+
 // Game Variables
 let gameState = "welcome"; 
 // States: 
@@ -318,6 +321,40 @@ function isColliding(a, b) {
     );
 }
 
+// Generate starfield background
+function createStarfield(count, width, height) {
+    const stars = [];
+
+    for (let i = 0; i < count; i++) {
+        stars.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            speed: 2 + Math.random() * 6,
+            size: 1 + Math.random() * 2,
+            alpha: 0.3 + Math.random() * 0.7 // Opacity
+        });
+    }
+
+    return {
+        update() {
+            for (const s of stars) {
+                s.y += s.speed;
+                if (s.y > height) { // Recycle stars, as they move off the bottom of the canvas restore them back up the top at a random x coordinate
+                    s.y = 0;
+                    s.x = Math.random() * width;
+                }
+            }
+        },
+
+        draw(ctx) {
+            for (const s of stars) {
+                ctx.fillStyle = `rgba(255, 255, 255, ${s.alpha})`; // Colour white with random alpha
+                ctx.fillRect(s.x, s.y, s.size, s.size);
+            }
+        }
+    };
+}
+
 
 // ========================= Input =========================
 // Input listener
@@ -338,7 +375,6 @@ window.addEventListener('keyup', e => {
 function update() {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Always draw the canvas
 
-    
     // Using if statements to determine what to do or display depending on the game state
     // An alternative to using if statements is to use a switch. The performance difference appears to be zero, only difference is readability.
     if (gameState === "welcome") {
@@ -348,7 +384,8 @@ function update() {
     }
 
     if (gameState === "paused") {
-        // Draw the player, enemies and bullets so they stay visible on screen
+        // Draw the background player, enemies and bullets so they stay visible on screen
+        starfield.draw(ctx);
         player.draw();
         enemies.forEach(e => e.draw(ctx));
         bullets.forEach(b => b.draw(ctx));
@@ -367,6 +404,9 @@ function update() {
     if (gameState === "respawning") {
         drawOverlay("respawning");
 
+        starfield.draw(ctx);
+        starfield.update();
+
         enemies.forEach(e => e.update());
         enemies.forEach(e => e.draw(ctx));
     }
@@ -382,6 +422,10 @@ function update() {
         if (keys[" "]) {
             fireBullet();
         }
+        // Draw the background - draw it early to make sure it's drawn first with everything else on top
+        starfield.draw(ctx);
+        starfield.update();
+
         // Player updates
         player.move(dx, dy);
         player.draw();
