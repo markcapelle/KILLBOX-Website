@@ -164,6 +164,34 @@ main {
     background: lightblue;
 }
 
+/* ====================== Scoreboard ====================== */
+#scoreboard-container {
+    width: 350px;
+    margin: 20px auto 40px auto;
+    padding: 10px;
+    background: #111;
+    border: 2px solid #444;
+    color: #fff;
+    font-family: monospace;
+
+    text-align: center;
+}
+
+#scoreboard {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#scoreboard th, #scoreboard td {
+    padding: 6px 10px;
+    border-bottom: 1px solid #333;
+}
+
+#scoreboard tr:nth-child(even) {
+    background: #1a1a1a;
+}
+
+
 
 /* ====================== Navigation ====================== */
 nav {

@@ -1,5 +1,9 @@
 const audioBtn = document.getElementById('audio-btn');
 let audioEnabled = false; // Control if music and sound effects are active
+// Previously this defaulted to 'true' in order to autoplay music and audio
+// Recent updates to browsers has changed audio autoplay behaviour in browsers. Audio won't typically play until user interaction, 
+// preventing game music and audio from starting.
+// Game audio now loads in a muted state, waiting for player interaction to enable it.
 
 // Music
 const bgMusic = new Audio("assets/audio/West One Music - Rage Racer.mp3");
@@ -16,7 +20,6 @@ const GameOver = new Audio("assets/audio/GameOver.mp3");
 
 // Dynamic set the audio button icon
 if (audioEnabled) {
-    //bgMusic.play();
     audioBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>'
 }
 else {
@@ -31,13 +34,13 @@ audioBtn.addEventListener('click', () => {
         bgMusic.play();
 
         // Set audio controls button
-        //audioBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
+        audioBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
     } else {
         // Stop music
         bgMusic.pause();
 
         // Set audio controls button
-        //audioBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+        audioBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
     }
 });
 

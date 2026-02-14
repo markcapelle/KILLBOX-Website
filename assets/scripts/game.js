@@ -33,6 +33,10 @@ let gameState = "welcome";
 // paused - pause spawning, prevent input, halt updates
 // gameover - clear all projectile and enemy objects, display gameover overlay
 
+// Scoreboard variables
+const scoreBoardBody = document.querySelector("#scoreboard tbody");
+let scoreBoardEntries = [];
+
 // Player respawn co-ordinates
 const playerSpawn = { // Not technically a variable, but making it an object allows cleaner storage of x and y co-ords
     x: canvas.width / 2,
@@ -88,7 +92,7 @@ const player = {
     y: playerSpawn.y, // Initial position near bottom
     width: 16,
     height: 16,
-    speed: 4,
+    speed: 3,
     lives: 3,
     score: 0,
 
@@ -287,6 +291,7 @@ function gameOver() {
     bullets.length = 0;
     player.x = playerSpawn.x;
     player.y = playerSpawn.y;
+    addScoreToBoard(player.score);
     playGameOver(); // Play gameover sound in audio.js
 }
 
@@ -306,6 +311,42 @@ function fireBullet() {
     setTimeout(() => { // Timeout to control rate of fire
         player.canFire = true;
     }, player.fireCooldown);
+}
+
+function addScoreToBoard(score) {
+    const timestamp = new Date().toLocaleTimeString();
+
+    scoreBoardEntries.push({
+        score,
+        time: timestamp
+    });
+
+    // Sort highest to lowest
+    scoreBoardEntries.sort((a, b) => b.score - a.score);
+
+    // Keep top 5 scores
+    scoreBoardEntries = scoreBoardEntries.slice(0, 5);
+
+    renderScoreBoard();
+}
+
+function renderScoreBoard() {
+    scoreBoardBody.innerHTML = "";
+
+    scoreBoardEntries
+        .sort((a, b) => b.score - a.score) // highest first
+        .forEach((entry, index) => {
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${entry.score}</td>
+                <td>${entry.time}</td>
+            `;
+
+            scoreBoardBody.appendChild(row);
+        });
+
 }
 
 // ========================= Collision =========================
@@ -371,6 +412,7 @@ window.addEventListener('keydown', e => {
 window.addEventListener('keyup', e => {
     keys[e.key] = false;
 });
+
  
 // ========================= Game Loop =========================
 function update() {
