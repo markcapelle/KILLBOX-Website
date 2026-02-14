@@ -41,6 +41,7 @@ const playerSpawn = { // Not technically a variable, but making it an object all
 
 let spawnRate = 100; // Time between enemy spawns in ms. higher = slower, lower = faster
 
+// ========================= Buttons =========================
 const playBtn = document.getElementById("play-btn"); // Play button
 const pauseBtn = document.getElementById("pause-btn"); // Pause button
 const quitBtn = document.getElementById ("quit-btn"); // Quit button
@@ -331,7 +332,7 @@ function createStarfield(count, width, height) {
             y: Math.random() * height,
             speed: 2 + Math.random() * 6,
             size: 1 + Math.random() * 2,
-            alpha: 0.3 + Math.random() * 0.7 // Opacity
+            alpha: 0.3 + Math.random() * 0.7, // Opacity
         });
     }
 
@@ -348,7 +349,7 @@ function createStarfield(count, width, height) {
 
         draw(ctx) {
             for (const s of stars) {
-                ctx.fillStyle = `rgba(255, 255, 255, ${s.alpha})`; // Colour white with random alpha
+                ctx.fillStyle = `rgba(255, 255, 255, ${s.alpha})`; // Color white with random alpha
                 ctx.fillRect(s.x, s.y, s.size, s.size);
             }
         }

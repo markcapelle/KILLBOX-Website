@@ -1,5 +1,5 @@
 const audioBtn = document.getElementById('audio-btn');
-let audioEnabled = true; // Control if music and sound effects are active
+let audioEnabled = false; // Control if music and sound effects are active
 
 // Music
 const bgMusic = new Audio("assets/audio/West One Music - Rage Racer.mp3");
@@ -14,9 +14,13 @@ const Respawn = new Audio("assets/audio/Respawn.mp3");
 const Pause = new Audio("assets/audio/Pause.mp3");
 const GameOver = new Audio("assets/audio/GameOver.mp3");
 
-// Autoplay on script load
+// Dynamic set the audio button icon
 if (audioEnabled) {
-    bgMusic.play();
+    //bgMusic.play();
+    audioBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>'
+}
+else {
+    audioBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
 }
 
 audioBtn.addEventListener('click', () => {
@@ -27,14 +31,13 @@ audioBtn.addEventListener('click', () => {
         bgMusic.play();
 
         // Set audio controls button
-        audioBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
+        //audioBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
     } else {
         // Stop music
         bgMusic.pause();
-        bgMusic.currentTime = 0;
 
         // Set audio controls button
-        audioBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+        //audioBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
     }
 });
 
