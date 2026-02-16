@@ -350,7 +350,7 @@ function renderScoreBoard() {
 }
 
 // ========================= Collision =========================
-// A pretty generic axis-aligned bounding box collision algorithm. Simply checks A overlap with B
+// A pretty generic axis-aligned bounding box collision algorithm. Simply checks square A overlap with square B
 // Will work player vs enemy, bullet vs enemy, etc
 // Used example from MDN_
 // https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection#collision_performance
