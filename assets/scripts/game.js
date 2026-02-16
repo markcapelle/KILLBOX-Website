@@ -56,24 +56,26 @@ playBtn.addEventListener("click", () => {
         return; // Ignore clicks if player is in the middle of respawn countdown
     }
     
-    if (gameState === "gameover") { // If in a gameover state, then player.lives will be zero. in this case, reset them to 3 to reset game.
+    if (gameState === "gameover" || gameState === "welcome") { // If in a gameover state, then player.lives will be zero. in this case, reset them to 3 to reset game.
         player.lives = 3;
         player.score = 0;
-        gameState = "playing";
-        enemySpawn(true);
+
+        startGame();
     }
 
-    // Normal case start/resume
-    gameState = "playing"; 
-    enemySpawn(true); // enemyspawn function prevents duplication, so the play button can be multi-clicked to no ill effect
-}); // Could send all this to a startGame function - for readability against other button functions, leaving it in the eventlistener function is better
+    if (gameState === "paused") {
+        // Resume from pause
+        playPause(); // Play pause sound
+        resumeGame();
+    }
+});
 
 // On pause button click pause game
 pauseBtn.addEventListener("click", () => {
     if (gameState === "playing") { // Only able to pause if the gamestate is playing
         gameState = "paused";
         enemySpawn(false);
-        playPause();
+        playPause(); // play pause sound from audio.js
     }
 });
 
@@ -192,7 +194,7 @@ function drawOverlay(type) {
             ctx.textAlign = "center";
             ctx.fillText("PAUSED", canvas.width / 2, canvas.height / 2);
             break;
-        
+
         case "gameover":
             ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -232,6 +234,19 @@ function drawHUD() {
     // Score top right
     ctx.textAlign = "right"
     ctx.fillText(`Score: ${player.score}`, canvas.width - 25, 20)
+}
+
+function startGame() {
+    gameState = "playing";
+    playRespawn(); // play respawn sound
+    setTimeout(() => {
+        enemySpawn(true);
+    }, 3100);
+}
+
+function resumeGame() {
+    gameState = "playing";
+    enemySpawn(true);
 }
 
 // Spawn enemies
