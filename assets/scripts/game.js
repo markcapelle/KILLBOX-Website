@@ -33,6 +33,8 @@ let gameState = "welcome";
 // paused - pause spawning, prevent input, halt updates
 // gameover - clear all projectile and enemy objects, display gameover overlay
 
+let autoFire = false; // Used to toggle shooting on/off when using touch controls
+
 // Scoreboard variables
 const scoreBoardBody = document.querySelector("#scoreboard tbody");
 let scoreBoardEntries = [];
@@ -417,8 +419,7 @@ function createStarfield(count, width, height) {
 }
 
 
-// ========================= Input =========================
-// Input listener
+// ========================= Input Listner =========================
 const keys = {};
 window.addEventListener('keydown', e => {
     // Prevent browser scrolling when game controls are used
@@ -432,6 +433,18 @@ window.addEventListener('keyup', e => {
     keys[e.key] = false;
 });
 
+// Check for touchscreen and reveal/hide touch controls
+if (navigator.maxTouchPoints > 0) {
+    document.body.classList.add("touch");
+} else {
+    document.body.classList.add("no-touch");
+}
+
+// Disable long press (right click) behaviour
+document.getElementById("touch-controls")
+    .addEventListener("contextmenu", e => e.preventDefault());
+
+
 // Touch button controls listener
 leftBtn.addEventListener("touchstart", () => keys["ArrowLeft"] = true);
 leftBtn.addEventListener("touchend",   () => keys["ArrowLeft"] = false);
@@ -440,24 +453,9 @@ rightBtn.addEventListener("touchstart", () => keys["ArrowRight"] = true);
 rightBtn.addEventListener("touchend",   () => keys["ArrowRight"] = false);
 
 shootBtn.addEventListener("touchstart", () => {
-    keys[" "] = true;
-    fireBullet(); // optional: immediate shot on tap
+    autoFire = !autoFire; // Toggle state
+    keys[" "] = autoFire;
 });
-shootBtn.addEventListener("touchend", () => keys[" "] = false);
-
-// Touch button control 'click' listener
-bindButton(leftBtn, "ArrowLeft");
-bindButton(rightBtn, "ArrowRight");
-bindButton(shootBtn, " ");
-
-function bindButton(btn, key) {
-    btn.addEventListener("mousedown", () => keys[key] = true);
-    btn.addEventListener("mouseup",   () => keys[key] = false);
-    btn.addEventListener("mouseleave",() => keys[key] = false);
-
-    btn.addEventListener("touchstart", () => keys[key] = true);
-    btn.addEventListener("touchend",   () => keys[key] = false);
-}
 
 // ========================= Game Loop =========================
 function update() {
