@@ -50,6 +50,10 @@ const playBtn = document.getElementById("play-btn"); // Play button
 const pauseBtn = document.getElementById("pause-btn"); // Pause button
 const quitBtn = document.getElementById ("quit-btn"); // Quit button
 
+const leftBtn = document.getElementById("left-btn"); // Move left touch control
+const rightBtn = document.getElementById("right-btn"); // Move right touch control
+const shootBtn = document.getElementById("shoot-btn"); // Shoot touch control
+
 // On play button click switch game state
 playBtn.addEventListener("click", () => {
     if(gameState === "respawning") {
@@ -428,7 +432,33 @@ window.addEventListener('keyup', e => {
     keys[e.key] = false;
 });
 
- 
+// Touch button controls listener
+leftBtn.addEventListener("touchstart", () => keys["ArrowLeft"] = true);
+leftBtn.addEventListener("touchend",   () => keys["ArrowLeft"] = false);
+
+rightBtn.addEventListener("touchstart", () => keys["ArrowRight"] = true);
+rightBtn.addEventListener("touchend",   () => keys["ArrowRight"] = false);
+
+shootBtn.addEventListener("touchstart", () => {
+    keys[" "] = true;
+    fireBullet(); // optional: immediate shot on tap
+});
+shootBtn.addEventListener("touchend", () => keys[" "] = false);
+
+// Touch button control 'click' listener
+bindButton(leftBtn, "ArrowLeft");
+bindButton(rightBtn, "ArrowRight");
+bindButton(shootBtn, " ");
+
+function bindButton(btn, key) {
+    btn.addEventListener("mousedown", () => keys[key] = true);
+    btn.addEventListener("mouseup",   () => keys[key] = false);
+    btn.addEventListener("mouseleave",() => keys[key] = false);
+
+    btn.addEventListener("touchstart", () => keys[key] = true);
+    btn.addEventListener("touchend",   () => keys[key] = false);
+}
+
 // ========================= Game Loop =========================
 function update() {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Always draw the canvas
