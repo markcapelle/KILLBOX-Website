@@ -4,7 +4,7 @@
 const viewport = document.getElementById('game-viewport');
 const canvas = document.createElement('canvas');
 canvas.width = 375;
-canvas.height = 540; // leave room for controls
+canvas.height = 595; // leave room for controls
 viewport.appendChild(canvas);
 const ctx = canvas.getContext('2d');
 

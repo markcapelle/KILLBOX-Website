@@ -131,6 +131,7 @@ main {
 
 .controls {
     height: 60px;
+    width: 375px;
     display: flex;
     justify-content: center;
     align-items: center;
